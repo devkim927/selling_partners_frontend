@@ -1,4 +1,4 @@
-// src/App.js
+import './services/axiosConfig';
 import AppRouter from './routes/AppRouter';
 
 function App() {

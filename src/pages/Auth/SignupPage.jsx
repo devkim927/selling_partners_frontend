@@ -1,3 +1,5 @@
+// pjt/src/pages/Auth/SignupPage.jsx
+
 import PageLayout from "../../components/layout/PageLayout";
 import SignupForm from "../../components/auth/SignupForm";
 

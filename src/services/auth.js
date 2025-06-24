@@ -1,6 +1,9 @@
+// pjt/src/services/auth.js
+
+
 import axios from 'axios';
 
-const API_BASE = 'http://localhost:8080/api';
+const API_BASE = 'http://localhost:8080/api/v1';
 
 
 export const login = (formData) => {
@@ -8,6 +11,7 @@ export const login = (formData) => {
     headers: {
       'Content-Type': 'application/json',
     },
+    withCredentials: true,
   });
 };
 
@@ -17,5 +21,6 @@ export const signup = (formData) => {
     headers: {
       'Content-Type': 'application/json',
     },
+    withCredentials: true,
   });
 };

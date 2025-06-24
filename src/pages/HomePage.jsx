@@ -1,4 +1,5 @@
-// src/pages/HomePage.jsx
+// pjt/src/pages/HomePage.jsx
+
 import { Link } from 'react-router-dom';
 
 function HomePage() {

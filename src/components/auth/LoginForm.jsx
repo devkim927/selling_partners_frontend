@@ -1,3 +1,5 @@
+// pjt/src/components/auth/LoginForm.jsx
+
 import { useState } from "react";
 import { login } from "../../services/auth";
 import InputField from "../common/InputField";
@@ -5,7 +7,7 @@ import Button from "../common/Button";
 
 function LoginForm() {
   const [formData, setFormData] = useState({
-    email: '',
+    username: '',
     password: '',
   });
 
@@ -34,10 +36,10 @@ function LoginForm() {
   return (
     <form onSubmit={handleSubmit}>
       <InputField
-        type="email"
-        name="email"
-        placeholder="이메일"
-        value={formData.email}
+        type="text"
+        name="username"
+        placeholder="아이디(사용자명)"
+        value={formData.username}
         onChange={handleChange}
       /><br />
 

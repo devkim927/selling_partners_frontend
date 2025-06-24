@@ -1,3 +1,6 @@
+// pjt/src/components/auth/SignupForm.jsx
+
+
 import { useState } from "react";
 import { signup } from "../../services/auth";
 import InputField from "../common/InputField";
@@ -6,11 +9,12 @@ import Button from "../common/Button";
 
 function SignupForm() {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
+    username: '',
     password: '',
-    phoneNumber: '',
+    email: '',
     role: '',
+    phoneNumber: '',
+    name: '',
   });
 
   const handleChange = (e) => {
@@ -52,18 +56,10 @@ function SignupForm() {
     <form onSubmit={handleSubmit}>
       <InputField 
         type="text"
-        name="name"
-        value={formData.name}
+        name="username"
+        value={formData.username}
         onChange={handleChange}
-        placeholder="이름"
-      /><br />
-
-      <InputField 
-        type="email"
-        name="email"
-        value={formData.email}
-        onChange={handleChange}
-        placeholder="이메일"
+        placeholder="아이디(사용자명)"
       /><br />
 
       <InputField 
@@ -72,6 +68,21 @@ function SignupForm() {
         value={formData.password}
         onChange={handleChange}
         placeholder="비밀번호"
+      /><br />
+      
+      <InputField 
+        type="email"
+        name="email"
+        value={formData.email}
+        onChange={handleChange}
+        placeholder="이메일"
+      /><br />
+
+      <SelectField 
+        name="role"
+        value={formData.role}
+        onChange={handleChange}
+        options={roleOptions}
       /><br />
 
       <InputField 
@@ -82,11 +93,12 @@ function SignupForm() {
         placeholder="전화번호"
       /><br />
 
-      <SelectField 
-        name="role"
-        value={formData.role}
+      <InputField 
+        type="text"
+        name="name"
+        value={formData.name}
         onChange={handleChange}
-        options={roleOptions}
+        placeholder="이름"
       /><br />
 
       <Button type="submit">회원가입</Button>
