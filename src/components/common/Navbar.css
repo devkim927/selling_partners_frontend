@@ -1,0 +1,66 @@
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  border-bottom: 2px solid #e0e0e0;
+  padding: 0 32px;
+  height: 60px;
+  font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+}
+
+.navbar__logo {
+  font-weight: bold;
+  font-size: 1.3rem;
+  color: #5c27fe;
+}
+
+.navbar__menu {
+  display: flex;
+  gap: 16px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+}
+
+.navbar__btn {
+  border: none;
+  background: none;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 6px 16px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.navbar__btn.orange {
+  background: #ffb74d;
+  color: #fff;
+  font-weight: bold;
+}
+
+.navbar__btn.purple {
+  background: #5c27fe;
+  color: #fff;
+  font-weight: bold;
+}
+
+.navbar__btn.login {
+  border: 1px solid #5c27fe;
+  color: #5c27fe;
+  background: #fff;
+  margin-right: 8px;
+}
+
+.navbar__btn.signup {
+  background: #5c27fe;
+  color: #fff;
+}
+
+.navbar__auth {
+  display: flex;
+  align-items: center;
+} 
