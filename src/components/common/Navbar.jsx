@@ -9,7 +9,7 @@ function Navbar() {
       <div className="navbar__logo" onClick={() => navigate('/')}>Selling Partners</div>
       <ul className="navbar__menu">
         <li><button className="navbar__btn orange">유통 정보 둘러보기</button></li>
-        <li><button className="navbar__btn purple">파트너 매칭 시작하기</button></li>
+        <li><button className="navbar__btn purple" onClick={() => navigate('/posts')}>파트너 매칭 시작하기</button></li>
         <li>영업기술 강의</li>
         <li>회사 소개</li>
         <li>협업 문의</li>
