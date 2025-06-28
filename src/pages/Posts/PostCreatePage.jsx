@@ -1,13 +1,19 @@
 import React from 'react';
 import PostForm from '../../components/posts/PostForm';
-import { useNavigate } from 'react-router-dom';
+import PageLayout from '../../components/layout/PageLayout';
 
 export default function PostCreatePage() {
-  const navigate = useNavigate();
   return (
-    <div style={{ padding: 40 }}>
-      <h2>프로젝트 등록</h2>
-      <PostForm onSuccess={() => navigate('/posts')} />
-    </div>
+    <PageLayout>
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        minHeight: '80vh',
+        padding: '20px'
+      }}>
+        <PostForm />
+      </div>
+    </PageLayout>
   );
 } 

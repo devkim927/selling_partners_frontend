@@ -1,23 +1,35 @@
 import React, { useState } from 'react';
+import { createPost } from '../../services/posts';
+import { useNavigate } from 'react-router-dom';
 
-const INDUSTRY_OPTIONS = [
-  { value: '', label: '선택' },
-  { value: 'security', label: '보안/경비' },
-  { value: 'manufacturing', label: '제조' },
-  { value: 'it', label: 'IT' },
-  { value: 'marketing', label: '마케팅' },
-  // 필요시 추가
+// 백엔드 Category enum에 맞춘 옵션들
+const CATEGORY_OPTIONS = [
+  { value: '', label: '카테고리 선택' },
+  { value: 'IT_SOFTWARE', label: 'IT/소프트웨어' },
+  { value: 'DESIGN_CREATIVE', label: '디자인/영상/콘텐츠' },
+  { value: 'MANUFACTURING', label: '제조/기계/부품' },
+  { value: 'CONSTRUCTION', label: '건축/토목/도시개발' },
+  { value: 'CONSULTING', label: '경영/컨설팅' },
+  { value: 'EDUCATION', label: '교육/강의' },
+  { value: 'HEALTHCARE', label: '헬스케어/의료' },
+  { value: 'MARKETING_SALES', label: '마케팅/영업' },
+  { value: 'DISTRIBUTION_TRADE', label: '유통/무역' },
+  { value: 'ENVIRONMENT_ENERGY', label: '환경/에너지' },
+  { value: 'SAFETY_MANAGEMENT', label: '안전/방재/시설관리' },
 ];
 
 function PostForm() {
   const [form, setForm] = useState({
     title: '',
-    price: '',
-    industry: '',
-    image: null,
-    pdf: null,
-    detail: '',
+    description: '',
+    summary: '',
+    category: '',
+    deadline: '',
+    thumbnail: null,
+    brochure: null,
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -28,38 +40,250 @@ function PostForm() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    Object.entries(form).forEach(([key, value]) => {
-      if (value) formData.append(key, value);
-    });
-    // TODO: API 연동
-    console.log('제출 데이터:', ...formData);
-    alert('게시글 작성 완료 (API 연동 필요)');
+    setIsLoading(true);
+
+    try {
+      const formData = new FormData();
+      
+      // 백엔드 ProjectCreateRequest 형식에 맞춰 데이터 추가
+      formData.append('title', form.title);
+      formData.append('description', form.description);
+      formData.append('summary', form.summary);
+      formData.append('category', form.category);
+      formData.append('deadline', form.deadline);
+      
+      if (form.thumbnail) {
+        formData.append('thumbnail', form.thumbnail);
+      }
+      if (form.brochure) {
+        formData.append('brochure', form.brochure);
+      }
+
+      console.log('제출 데이터:', Object.fromEntries(formData));
+      
+      // 임시로 모의 응답 사용 (백엔드 API가 준비되지 않은 경우)
+      const mockResponse = {
+        id: Date.now(),
+        title: form.title,
+        description: form.description,
+        summary: form.summary,
+        category: form.category,
+        deadline: form.deadline,
+        status: true,
+        views: 0,
+        createdAt: new Date().toISOString(),
+        thumbnailUrl: form.thumbnail ? URL.createObjectURL(form.thumbnail) : null,
+        brochureUrl: form.brochure ? URL.createObjectURL(form.brochure) : null
+      };
+      
+      console.log('게시글 작성 성공 (모의):', mockResponse);
+      
+      alert('게시글 작성이 완료되었습니다! (모의 데이터)');
+      navigate('/posts'); // 게시글 목록으로 이동
+      
+      // 실제 API 호출 (백엔드가 준비되면 주석 해제)
+      // const response = await createPost(formData);
+      // console.log('게시글 작성 성공:', response);
+      // alert('게시글 작성이 완료되었습니다!');
+      // navigate('/posts');
+      
+    } catch (error) {
+      console.error('게시글 작성 실패:', error);
+      
+      // 더 자세한 에러 정보 출력
+      if (error.response) {
+        console.error('에러 상태:', error.response.status);
+        console.error('에러 데이터:', error.response.data);
+        console.error('에러 헤더:', error.response.headers);
+        
+        if (error.response.status === 401) {
+          alert('로그인이 필요합니다. 로그인 후 다시 시도해주세요.');
+        } else if (error.response.status === 403) {
+          alert('권한이 없습니다. COMPANY 역할로 로그인해주세요.');
+        } else if (error.response.status === 400) {
+          alert('입력 데이터가 올바르지 않습니다. 다시 확인해주세요.');
+        } else {
+          alert(`게시글 작성에 실패했습니다. (${error.response.status})`);
+        }
+      } else if (error.request) {
+        console.error('요청은 보냈지만 응답이 없음:', error.request);
+        alert('서버에 연결할 수 없습니다. 백엔드 서버가 실행 중인지 확인해주세요.');
+      } else {
+        console.error('요청 설정 중 에러:', error.message);
+        alert('요청 중 오류가 발생했습니다.');
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ background: '#fff', borderRadius: 16, boxShadow: '0 2px 16px rgba(92,39,254,0.08)', padding: 32, minWidth: 400, maxWidth: 500 }}>
-      <h2 style={{ textAlign: 'center', marginBottom: 8 }}>게시글 작성</h2>
-      <div style={{ textAlign: 'center', color: '#666', marginBottom: 24 }}>영업 / 고객확보를 위해 제안하세요!</div>
-      <input name="title" placeholder="게시글 제목" value={form.title} onChange={handleChange} style={{ width: '100%', marginBottom: 12, padding: 8 }} required />
-      <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-        <input name="price" type="number" placeholder="금액" value={form.price} onChange={handleChange} style={{ flex: 1, padding: 8 }} required />
-        <select name="industry" value={form.industry} onChange={handleChange} style={{ flex: 1, padding: 8 }} required>
-          {INDUSTRY_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+    <form onSubmit={handleSubmit} style={{ 
+      background: '#fff', 
+      borderRadius: 16, 
+      boxShadow: '0 2px 16px rgba(92,39,254,0.08)', 
+      padding: 32, 
+      minWidth: 400, 
+      maxWidth: 600 
+    }}>
+      <h2 style={{ textAlign: 'center', marginBottom: 8, color: '#333' }}>게시글 작성</h2>
+      <div style={{ textAlign: 'center', color: '#666', marginBottom: 24 }}>
+        영업 / 고객확보를 위해 제안하세요!
+      </div>
+      
+      {/* 제목 */}
+      <div style={{ marginBottom: 16 }}>
+        <input 
+          name="title" 
+          placeholder="게시글 제목" 
+          value={form.title} 
+          onChange={handleChange} 
+          style={{ 
+            width: '100%', 
+            padding: '12px 16px', 
+            border: '1px solid #e0e0e0',
+            borderRadius: 8,
+            fontSize: 16
+          }} 
+          required 
+        />
+      </div>
+
+      {/* 요약 */}
+      <div style={{ marginBottom: 16 }}>
+        <input 
+          name="summary" 
+          placeholder="게시글 요약 (300자 이내)" 
+          value={form.summary} 
+          onChange={handleChange} 
+          style={{ 
+            width: '100%', 
+            padding: '12px 16px', 
+            border: '1px solid #e0e0e0',
+            borderRadius: 8,
+            fontSize: 16
+          }} 
+          maxLength={300}
+          required 
+        />
+      </div>
+
+      {/* 카테고리와 마감일 */}
+      <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
+        <select 
+          name="category" 
+          value={form.category} 
+          onChange={handleChange} 
+          style={{ 
+            flex: 1, 
+            padding: '12px 16px', 
+            border: '1px solid #e0e0e0',
+            borderRadius: 8,
+            fontSize: 16
+          }} 
+          required
+        >
+          {CATEGORY_OPTIONS.map(opt => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
         </select>
+        <input 
+          name="deadline" 
+          type="date" 
+          value={form.deadline} 
+          onChange={handleChange} 
+          style={{ 
+            flex: 1, 
+            padding: '12px 16px', 
+            border: '1px solid #e0e0e0',
+            borderRadius: 8,
+            fontSize: 16
+          }} 
+          required 
+        />
       </div>
-      <div style={{ marginBottom: 12 }}>
-        <label style={{ fontSize: 14, color: '#555' }}>상품 이미지 첨부</label>
-        <input name="image" type="file" accept="image/*" onChange={handleChange} style={{ width: '100%' }} />
+
+      {/* 썸네일 이미지 */}
+      <div style={{ marginBottom: 16 }}>
+        <label style={{ fontSize: 14, color: '#555', display: 'block', marginBottom: 8 }}>
+          썸네일 이미지 첨부
+        </label>
+        <input 
+          name="thumbnail" 
+          type="file" 
+          accept="image/*" 
+          onChange={handleChange} 
+          style={{ 
+            width: '100%',
+            padding: '8px',
+            border: '1px solid #e0e0e0',
+            borderRadius: 8
+          }} 
+        />
       </div>
-      <div style={{ marginBottom: 12 }}>
-        <label style={{ fontSize: 14, color: '#555' }}>상품 설명 PDF 첨부</label>
-        <input name="pdf" type="file" accept="application/pdf" onChange={handleChange} style={{ width: '100%' }} />
+
+      {/* 브로셔 PDF */}
+      <div style={{ marginBottom: 16 }}>
+        <label style={{ fontSize: 14, color: '#555', display: 'block', marginBottom: 8 }}>
+          브로셔 PDF 첨부
+        </label>
+        <input 
+          name="brochure" 
+          type="file" 
+          accept="application/pdf" 
+          onChange={handleChange} 
+          style={{ 
+            width: '100%',
+            padding: '8px',
+            border: '1px solid #e0e0e0',
+            borderRadius: 8
+          }} 
+        />
       </div>
-      <textarea name="detail" placeholder="게시글 상세 내용" value={form.detail} onChange={handleChange} style={{ width: '100%', minHeight: 80, marginBottom: 16, padding: 8 }} required />
-      <button type="submit" style={{ width: '100%', background: '#222', color: '#fff', border: 'none', borderRadius: 6, padding: '12px 0', fontWeight: 600, fontSize: 16 }}>게시글 작성 완료</button>
+
+      {/* 상세 내용 */}
+      <div style={{ marginBottom: 24 }}>
+        <textarea 
+          name="description" 
+          placeholder="게시글 상세 내용" 
+          value={form.description} 
+          onChange={handleChange} 
+          style={{ 
+            width: '100%', 
+            minHeight: 120, 
+            padding: '12px 16px', 
+            border: '1px solid #e0e0e0',
+            borderRadius: 8,
+            fontSize: 16,
+            resize: 'vertical'
+          }} 
+          required 
+        />
+      </div>
+
+      {/* 제출 버튼 */}
+      <button 
+        type="submit" 
+        disabled={isLoading}
+        style={{ 
+          width: '100%', 
+          background: isLoading ? '#ccc' : '#5c27fe', 
+          color: '#fff', 
+          border: 'none', 
+          borderRadius: 8, 
+          padding: '16px 0', 
+          fontWeight: 600, 
+          fontSize: 16,
+          cursor: isLoading ? 'not-allowed' : 'pointer',
+          transition: 'background 0.2s'
+        }}
+      >
+        {isLoading ? '처리 중...' : '게시글 작성 완료'}
+      </button>
     </form>
   );
 }
