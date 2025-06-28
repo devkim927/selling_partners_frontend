@@ -3,21 +3,27 @@
   align-items: center;
   justify-content: space-between;
   background: #fff;
-  border-bottom: 2px solid #e0e0e0;
-  padding: 0 32px;
-  height: 60px;
+  box-shadow: 0 2px 12px rgba(60,60,100,0.06);
+  padding: 0 48px;
+  height: 68px;
+  border-radius: 0 0 18px 18px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
   font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
 }
 
 .navbar__logo {
   font-weight: bold;
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   color: #5c27fe;
+  letter-spacing: -1px;
+  cursor: pointer;
 }
 
 .navbar__menu {
   display: flex;
-  gap: 16px;
+  gap: 20px;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -31,25 +37,24 @@
   background: none;
   font-size: 1rem;
   cursor: pointer;
-  padding: 6px 16px;
-  border-radius: 6px;
-  transition: background 0.2s;
+  padding: 8px 20px;
+  border-radius: 10px;
+  transition: background 0.2s, color 0.2s;
+  font-weight: 600;
 }
 
 .navbar__btn.orange {
   background: #ffb74d;
   color: #fff;
-  font-weight: bold;
 }
 
 .navbar__btn.purple {
   background: #5c27fe;
   color: #fff;
-  font-weight: bold;
 }
 
 .navbar__btn.login {
-  border: 1px solid #5c27fe;
+  border: 1.5px solid #5c27fe;
   color: #5c27fe;
   background: #fff;
   margin-right: 8px;
@@ -60,7 +65,30 @@
   color: #fff;
 }
 
+.navbar__btn:hover, .navbar__btn:focus {
+  background: #f7f7fa;
+  color: #5c27fe;
+}
+
 .navbar__auth {
   display: flex;
   align-items: center;
+  gap: 8px;
+}
+
+@media (max-width: 700px) {
+  .navbar {
+    padding: 0 12px;
+    height: 56px;
+  }
+  .navbar__logo {
+    font-size: 1.1rem;
+  }
+  .navbar__btn {
+    font-size: 0.95rem;
+    padding: 6px 10px;
+  }
+  .navbar__menu {
+    gap: 8px;
+  }
 } 

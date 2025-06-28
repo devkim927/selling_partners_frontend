@@ -5,6 +5,8 @@ import { signup } from "../../services/auth";
 import InputField from "../common/InputField";
 import SelectField from "../common/SelectField";
 import Button from "../common/Button";
+import { useAuth } from '../../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 function SignupForm() {
   const [formData, setFormData] = useState({
@@ -17,6 +19,8 @@ function SignupForm() {
   });
 
   const [isLoading, setIsLoading] = useState(false);
+  const { setUser } = useAuth();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -54,8 +58,11 @@ function SignupForm() {
 
     try {
       const response = await signup(dataToSend);
+      console.log('회원가입 응답:', response.data); // 디버깅용
+      setUser(response.data); // 회원가입 후 유저 정보 저장
       console.log('Signup response:', response); // 디버깅용
       alert('회원가입 성공!');
+      navigate('/'); // 홈으로 이동
       
       // 폼 초기화
       setFormData({
