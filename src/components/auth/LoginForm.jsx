@@ -4,12 +4,16 @@ import { useState } from "react";
 import { login } from "../../services/auth";
 import InputField from "../common/InputField";
 import Button from "../common/Button";
+import { useAuth } from '../../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 function LoginForm() {
   const [formData, setFormData] = useState({
     username: '',
     password: '',
   });
+  const { setUser } = useAuth();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,10 +27,10 @@ function LoginForm() {
     e.preventDefault();
     try {
       const res = await login(formData);
-      const token = res.data.token;
-      localStorage.setItem('accessToken', token);
+      console.log('로그인 응답:', res.data); // 디버깅용
+      setUser(res.data);
       alert('로그인 성공!');
-      console.log('응답 데이터:', res.data);
+      navigate('/');
     } catch (err) {
       console.error('로그인 실패:', err);
       alert('이메일 또는 비밀번호를 확인해주세요.');
