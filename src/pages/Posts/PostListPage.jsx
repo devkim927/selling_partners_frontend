@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { fetchPosts } from '../../services/posts';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import PageLayout from '../../components/layout/PageLayout';
 
@@ -9,155 +9,221 @@ export default function PostListPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { user } = useAuth();
-  const navigate = useNavigate();
 
   useEffect(() => {
-    console.log('PostListPage: 게시글 목록 조회 시작');
-    fetchPosts()
-      .then((data) => {
-        console.log('PostListPage: 게시글 목록 조회 성공', data);
-        setPosts(data);
-      })
-      .catch((err) => {
-        console.error('PostListPage: 게시글 목록 조회 실패', err);
-        
-        // 401 에러인 경우 특별 처리
-        if (err.response?.status === 401) {
-          setError('로그인이 필요한 서비스입니다. 로그인 후 이용해주세요.');
-        } else if (err.response?.status === 404) {
-          setError('게시글 목록 API가 아직 구현되지 않았습니다. 백엔드 개발자에게 문의해주세요.');
-        } else {
-          setError(err.message || '게시글 목록을 불러오는데 실패했습니다.');
-        }
-        
-        // 401 에러가 아닌 경우에만 alert 표시
-        if (err.response?.status !== 401) {
-          alert(`게시글 목록 조회 실패: ${err.message || '알 수 없는 오류'}`);
-        }
-      })
-      .finally(() => setLoading(false));
+    // 임시로 모의 데이터 사용 (백엔드 API가 준비되지 않은 경우)
+    const mockPosts = [
+      {
+        id: 1,
+        title: '웹 개발 프로젝트',
+        summary: 'React와 Spring Boot를 사용한 웹 애플리케이션 개발',
+        category: { displayName: 'IT/소프트웨어' },
+        status: true,
+        views: 15,
+        createdAt: '2024-06-28T10:00:00Z',
+        thumbnailUrl: null
+      },
+      {
+        id: 2,
+        title: '디자인 프로젝트',
+        summary: '브랜드 아이덴티티 및 로고 디자인',
+        category: { displayName: '디자인/영상/콘텐츠' },
+        status: false,
+        views: 8,
+        createdAt: '2024-06-27T14:30:00Z',
+        thumbnailUrl: null
+      }
+    ];
+    
+    setPosts(mockPosts);
+    setLoading(false);
+    
+    // 실제 API 호출 (백엔드가 준비되면 주석 해제)
+    // fetchPosts()
+    //   .then(setPosts)
+    //   .catch((err) => {
+    //     console.error('게시글 목록 조회 실패:', err);
+    //     setError('게시글 목록을 불러오는데 실패했습니다.');
+    //   })
+    //   .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return (
-    <PageLayout>
-      <div style={{ textAlign: 'center', padding: '40px' }}>
-        <h2>게시글 목록을 불러오는 중...</h2>
-      </div>
-    </PageLayout>
-  );
+  if (loading) {
+    return (
+      <PageLayout>
+        <div style={{ textAlign: 'center', padding: '40px' }}>
+          <h2>게시글을 불러오는 중...</h2>
+        </div>
+      </PageLayout>
+    );
+  }
 
-  if (error) return (
-    <PageLayout>
-      <div style={{ textAlign: 'center', padding: '40px' }}>
-        <h2>오류가 발생했습니다</h2>
-        <p>{error}</p>
-        {error.includes('로그인이 필요한 서비스') ? (
-          <div style={{ marginTop: '20px' }}>
-            <button 
-              onClick={() => navigate('/login')}
-              style={{
-                background: '#5c27fe',
-                color: 'white',
-                border: 'none',
-                padding: '12px 24px',
-                borderRadius: '10px',
-                cursor: 'pointer',
-                marginRight: '10px'
-              }}
-            >
-              로그인하기
-            </button>
-            <button 
-              onClick={() => navigate('/')}
-              style={{
-                background: '#f0f0f0',
-                color: '#333',
-                border: 'none',
-                padding: '12px 24px',
-                borderRadius: '10px',
-                cursor: 'pointer'
-              }}
-            >
-              홈으로 돌아가기
-            </button>
-          </div>
-        ) : (
-          <button 
-            onClick={() => window.location.reload()}
-            style={{
-              background: '#5c27fe',
-              color: 'white',
-              border: 'none',
-              padding: '12px 24px',
-              borderRadius: '10px',
-              cursor: 'pointer'
-            }}
-          >
-            다시 시도
-          </button>
-        )}
-      </div>
-    </PageLayout>
-  );
+  if (error) {
+    return (
+      <PageLayout>
+        <div style={{ textAlign: 'center', padding: '40px' }}>
+          <h2>오류가 발생했습니다</h2>
+          <p>{error}</p>
+        </div>
+      </PageLayout>
+    );
+  }
 
   return (
     <PageLayout>
-      <div>
-        <h2>프로젝트 목록</h2>
-        {user?.role === 'COMPANY' && (
-          <button 
-            onClick={() => navigate('/posts/new')}
-            style={{
-              background: '#5c27fe',
-              color: 'white',
-              border: 'none',
-              padding: '12px 24px',
-              borderRadius: '10px',
-              cursor: 'pointer',
-              marginBottom: '20px'
-            }}
-          >
-            새 프로젝트 등록
-          </button>
-        )}
-        
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
+          <h1 style={{ color: '#333', margin: 0 }}>프로젝트 목록</h1>
+          {user?.role === 'COMPANY' && (
+            <Link 
+              to="/posts/create" 
+              style={{
+                background: '#5c27fe',
+                color: 'white',
+                padding: '12px 24px',
+                borderRadius: 8,
+                textDecoration: 'none',
+                fontWeight: 600,
+                fontSize: 16
+              }}
+            >
+              게시글 작성
+            </Link>
+          )}
+        </div>
+
         {posts.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '40px' }}>
-            <p>등록된 프로젝트가 없습니다.</p>
+          <div style={{ 
+            textAlign: 'center', 
+            padding: '60px 20px',
+            background: '#fff',
+            borderRadius: 16,
+            boxShadow: '0 2px 16px rgba(92,39,254,0.08)'
+          }}>
+            <h3 style={{ color: '#666', marginBottom: 16 }}>등록된 게시글이 없습니다</h3>
+            <p style={{ color: '#999' }}>첫 번째 게시글을 작성해보세요!</p>
           </div>
         ) : (
-          <ul style={{ listStyle: 'none', padding: 0 }}>
-            {posts.map(post => (
-              <li 
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', 
+            gap: 24 
+          }}>
+            {posts.map((post) => (
+              <Link 
                 key={post.id} 
-                onClick={() => navigate(`/posts/${post.id}`)} 
+                to={`/posts/${post.id}`}
                 style={{ 
-                  cursor: 'pointer', 
-                  margin: '16px 0',
-                  padding: '20px',
-                  border: '1px solid #e0e0e0',
-                  borderRadius: '12px',
-                  background: 'white',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                  transition: 'transform 0.2s, box-shadow 0.2s'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.transform = 'translateY(-2px)';
-                  e.target.style.boxShadow = '0 4px 16px rgba(0,0,0,0.15)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.transform = 'translateY(0)';
-                  e.target.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+                  textDecoration: 'none', 
+                  color: 'inherit',
+                  display: 'block'
                 }}
               >
-                <strong style={{ fontSize: '1.2rem', color: '#333' }}>{post.title}</strong>
-                <div style={{ marginTop: '8px', color: '#666' }}>
-                  카테고리: {post.category} | 상태: {post.status ? '모집중' : '마감'}
+                <div style={{ 
+                  background: '#fff', 
+                  borderRadius: 16, 
+                  boxShadow: '0 2px 16px rgba(92,39,254,0.08)', 
+                  padding: 24,
+                  height: '100%',
+                  transition: 'transform 0.2s, box-shadow 0.2s',
+                  cursor: 'pointer',
+                  ':hover': {
+                    transform: 'translateY(-4px)',
+                    boxShadow: '0 4px 24px rgba(92,39,254,0.12)'
+                  }
+                }}>
+                  {/* 썸네일 이미지 */}
+                  <div style={{ 
+                    width: '100%', 
+                    height: 200, 
+                    background: '#f5f5f5', 
+                    borderRadius: 8, 
+                    marginBottom: 16,
+                    overflow: 'hidden',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    {post.thumbnailUrl ? (
+                      <img 
+                        src={post.thumbnailUrl} 
+                        alt="썸네일" 
+                        style={{ 
+                          width: '100%', 
+                          height: '100%',
+                          objectFit: 'cover'
+                        }} 
+                      />
+                    ) : (
+                      <div style={{ color: '#999', fontSize: 14 }}>이미지 없음</div>
+                    )}
+                  </div>
+
+                  {/* 게시글 정보 */}
+                  <div>
+                    <div style={{ marginBottom: 8 }}>
+                      <span style={{ 
+                        background: post.status ? '#4caf50' : '#f44336', 
+                        color: 'white', 
+                        padding: '2px 8px', 
+                        borderRadius: 12, 
+                        fontSize: 12, 
+                        fontWeight: 600 
+                      }}>
+                        {post.status ? '모집중' : '마감'}
+                      </span>
+                    </div>
+                    
+                    <strong style={{ 
+                      fontSize: '1.2rem', 
+                      color: '#333',
+                      display: 'block',
+                      marginBottom: 8,
+                      lineHeight: 1.4
+                    }}>
+                      {post.title}
+                    </strong>
+                    
+                    <div style={{ 
+                      marginBottom: 8, 
+                      color: '#666', 
+                      fontSize: 14 
+                    }}>
+                      카테고리: {post.category?.displayName || post.category}
+                    </div>
+                    
+                    {post.summary && (
+                      <div style={{ 
+                        marginBottom: 12, 
+                        color: '#555',
+                        fontSize: 14,
+                        lineHeight: 1.5,
+                        display: '-webkit-box',
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden'
+                      }}>
+                        {post.summary}
+                      </div>
+                    )}
+                    
+                    <div style={{ 
+                      display: 'flex', 
+                      justifyContent: 'space-between', 
+                      alignItems: 'center',
+                      fontSize: 12,
+                      color: '#999'
+                    }}>
+                      <span>조회수: {post.views || 0}</span>
+                      {post.createdAt && (
+                        <span>{new Date(post.createdAt).toLocaleDateString()}</span>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                <div style={{ marginTop: '12px', color: '#555' }}>{post.summary}</div>
-              </li>
+              </Link>
             ))}
-          </ul>
+          </div>
         )}
       </div>
     </PageLayout>
