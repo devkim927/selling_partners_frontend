@@ -4,7 +4,7 @@ import axios from 'axios';
 
 // 기본 설정
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = '';
+axios.defaults.baseURL = 'http://localhost:8080';
 
 const getCsrfToken = () => {
   const match = document.cookie.match(new RegExp('(^| )XSRF-TOKEN=([^;]+)'));
