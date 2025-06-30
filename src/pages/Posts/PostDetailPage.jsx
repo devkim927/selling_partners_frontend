@@ -12,33 +12,17 @@ export default function PostDetailPage() {
   const { user } = useAuth();
 
   useEffect(() => {
-    // 임시로 모의 데이터 사용 (백엔드 API가 준비되지 않은 경우)
-    const mockPost = {
-      id: parseInt(id),
-      title: '웹 개발 프로젝트',
-      description: 'React와 Spring Boot를 사용한 웹 애플리케이션 개발 프로젝트입니다. 프론트엔드는 React를 사용하고, 백엔드는 Spring Boot를 사용하여 RESTful API를 구현합니다.',
-      summary: 'React와 Spring Boot를 사용한 웹 애플리케이션 개발',
-      category: { displayName: 'IT/소프트웨어' },
-      status: true,
-      views: 15,
-      deadline: '2024-07-15',
-      createdAt: '2024-06-28T10:00:00Z',
-      thumbnailUrl: null,
-      brochureUrl: null,
-      user: { id: 1, name: '테스트 사용자' }
-    };
-    
-    setPost(mockPost);
-    setLoading(false);
-    
-    // 실제 API 호출 (백엔드가 준비되면 주석 해제)
-    // fetchPostDetail(id)
-    //   .then(setPost)
-    //   .catch((err) => {
-    //     console.error('게시글 조회 실패:', err);
-    //     setError('게시글을 불러오는데 실패했습니다.');
-    //   })
-    //   .finally(() => setLoading(false));
+    // 실제 API 호출
+    fetchPostDetail(id)
+      .then((post) => {
+        console.log('게시글 상세 응답:', post);
+        setPost(post);
+      })
+      .catch((err) => {
+        console.error('게시글 조회 실패:', err);
+        setError('게시글을 불러오는데 실패했습니다.');
+      })
+      .finally(() => setLoading(false));
   }, [id]);
 
   if (loading) return (

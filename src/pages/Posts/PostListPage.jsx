@@ -10,47 +10,19 @@ export default function PostListPage() {
   const [error, setError] = useState(null);
   const { user } = useAuth();
 
-useEffect(() => {
-  // 실제 API 호출 (페이지네이션: 0페이지, 18개)
-  fetchPosts(0, 18)
-    .then(res => {
-      setPosts(res.data.content);  // res.data인지 res.data.content인지 헷갈리는데 백엔드를 제가 지금 실행을 못시켜서 나중에 다시 확인
-    })
-    .catch((err) => {
-      console.error('게시글 목록 조회 실패:', err);
-      setError('게시글 목록을 불러오는데 실패했습니다.');
-    })
-    .finally(() => setLoading(false));
-
-  // 임시로 모의 데이터 사용 (백엔드 미구현 시)
-  /*
-  const mockPosts = [
-    {
-      id: 1,
-      title: '웹 개발 프로젝트',
-      summary: 'React와 Spring Boot를 사용한 웹 애플리케이션 개발',
-      category: { displayName: 'IT/소프트웨어' },
-      status: true,
-      views: 15,
-      createdAt: '2024-06-28T10:00:00Z',
-      thumbnailUrl: null
-    },
-    {
-      id: 2,
-      title: '디자인 프로젝트',
-      summary: '브랜드 아이덴티티 및 로고 디자인',
-      category: { displayName: '디자인/영상/콘텐츠' },
-      status: false,
-      views: 8,
-      createdAt: '2024-06-27T14:30:00Z',
-      thumbnailUrl: null
-    }
-  ];
-
-  setPosts(mockPosts);
-  setLoading(false);
-  */
-}, []);
+  useEffect(() => {
+    // 실제 API 호출
+    fetchPosts()
+      .then((posts) => {
+        console.log('게시글 목록 응답:', posts);
+        setPosts(posts || []);
+      })
+      .catch((err) => {
+        console.error('게시글 목록 조회 실패:', err);
+        setError('게시글 목록을 불러오는데 실패했습니다.');
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
   if (loading) {
     return (
@@ -80,7 +52,7 @@ useEffect(() => {
           <h1 style={{ color: '#333', margin: 0 }}>프로젝트 목록</h1>
           {user?.role === 'COMPANY' && (
             <Link 
-              to="/posts/create" 
+              to="/posts/new" 
               style={{
                 background: '#5c27fe',
                 color: 'white',

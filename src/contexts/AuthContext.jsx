@@ -2,6 +2,9 @@ import { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext();
 
+// 백엔드 서버 주소
+const API_BASE_URL = 'http://localhost:8080';
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null); // user: { id, name, email, role, ... }
   const [loading, setLoading] = useState(true); // 초기 로딩 상태
@@ -14,7 +17,7 @@ export function AuthProvider({ children }) {
   const checkSession = async () => {
     try {
       // 백엔드에서 세션 확인 API 구현 시 활성화
-      const response = await fetch('/api/v1/auth/me', {
+      const response = await fetch(`${API_BASE_URL}/api/v1/auth/me`, {
         credentials: 'include'
       });
       
@@ -71,7 +74,7 @@ export function AuthProvider({ children }) {
     
     // 백엔드 로그아웃 API 호출
     try {
-      await fetch('/api/v1/auth/logout', {
+      await fetch(`${API_BASE_URL}/api/v1/auth/logout`, {
         method: 'POST',
         credentials: 'include'
       });

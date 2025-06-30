@@ -63,31 +63,11 @@ function PostForm() {
 
       console.log('제출 데이터:', Object.fromEntries(formData));
       
-      // 임시로 모의 응답 사용 (백엔드 API가 준비되지 않은 경우)
-      const mockResponse = {
-        id: Date.now(),
-        title: form.title,
-        description: form.description,
-        summary: form.summary,
-        category: form.category,
-        deadline: form.deadline,
-        status: true,
-        views: 0,
-        createdAt: new Date().toISOString(),
-        thumbnailUrl: form.thumbnail ? URL.createObjectURL(form.thumbnail) : null,
-        brochureUrl: form.brochure ? URL.createObjectURL(form.brochure) : null
-      };
+      const response = await createPost(formData);
+      console.log('게시글 작성 성공:', response);
       
-      console.log('게시글 작성 성공 (모의):', mockResponse);
-      
-      alert('게시글 작성이 완료되었습니다! (모의 데이터)');
+      alert('게시글 작성이 완료되었습니다!');
       navigate('/posts'); // 게시글 목록으로 이동
-      
-      // 실제 API 호출 (백엔드가 준비되면 주석 해제)
-      // const response = await createPost(formData);
-      // console.log('게시글 작성 성공:', response);
-      // alert('게시글 작성이 완료되었습니다!');
-      // navigate('/posts');
       
     } catch (error) {
       console.error('게시글 작성 실패:', error);
