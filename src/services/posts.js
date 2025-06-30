@@ -55,8 +55,11 @@ axios.interceptors.response.use(
 );
 
 // 게시글 목록 조회
-export const fetchPosts = () =>
-  axios.get('/api/v1/projects').then(res => res.data);
+// export const fetchPosts = () =>
+//   axios.get('/api/v1/projects').then(res => res.data);
+export function fetchPosts(page = 0, size = 18) {
+  return axios.get(`/api/v1/projects?page=${page}&size=${size}`);
+}
 
 // 게시글 상세 조회
 export const fetchPostDetail = (id) =>
